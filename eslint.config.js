@@ -5,7 +5,14 @@ import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**', 'eslint.config.js'],
+    ignores: [
+      '**/dist/**',
+      '**/coverage/**',
+      '**/node_modules/**',
+      'eslint.config.js',
+      // Plain-JS build helper, outside the TS project graph.
+      'apps/api/scripts/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
