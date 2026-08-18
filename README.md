@@ -100,6 +100,9 @@ declared once, not re-typed on each side.
   the default and fully-expanded states, asserting zero serious/critical violations — this is
   automated proof, not just a manual claim.
 - Chart entrance animation is disabled under `prefers-reduced-motion`.
+- A row's depth and sibling position (e.g. "level 2, 2 of 3") are announced via visually-hidden
+  (`sr-only`) text inside each row header, chosen deliberately over `aria-level`/`posinset`/`setsize`
+  attributes on a non-treegrid table, which ARIA 1.2 only permits on treegrid rows.
 
 ## Testing
 

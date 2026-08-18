@@ -162,13 +162,12 @@ describe('DashboardPage', () => {
       expect(branch2Cells[branch2Cells.length - 1]).toBe('91');
     });
 
-    it('exposes the hierarchy to assistive tech via aria-level/posinset/setsize on Branch 2', async () => {
+    it('exposes the hierarchy to assistive tech via visually-hidden text in the Branch 2 rowheader', async () => {
       await renderDashboard();
 
       const branch2Row = findRow('Branch 2');
-      expect(branch2Row).toHaveAttribute('aria-level', '2');
-      expect(branch2Row).toHaveAttribute('aria-posinset', '2');
-      expect(branch2Row).toHaveAttribute('aria-setsize', '3');
+      const rowheader = within(branch2Row).getByRole('rowheader');
+      expect(rowheader.textContent).toContain('level 2, 2 of 3');
     });
   });
 

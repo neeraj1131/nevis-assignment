@@ -44,12 +44,7 @@ export function TableRow({ row, onToggle, monthCount }: TableRowProps) {
   const paddingLeft = BASE_PADDING_PX + depth * INDENT_STEP_PX;
 
   return (
-    <tr
-      className="border-t border-black/5 hover:bg-black/[0.02]"
-      aria-level={depth + 1}
-      aria-posinset={posInSet}
-      aria-setsize={setSize}
-    >
+    <tr className="border-t border-black/5 hover:bg-black/[0.02]">
       <th
         scope="row"
         className={`h-[52px] whitespace-nowrap px-4 text-left text-sm font-normal text-[var(--color-text-primary)] ${
@@ -75,6 +70,9 @@ export function TableRow({ row, onToggle, monthCount }: TableRowProps) {
           )}
           {isEmployee ? <Avatar id={node.id} name={node.name} /> : null}
           <span>{node.name}</span>
+          <span className="sr-only">
+            , level {depth + 1}, {posInSet} of {setSize}
+          </span>
         </span>
       </th>
       {Array.from({ length: monthCount }, (_, index) => (
