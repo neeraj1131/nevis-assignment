@@ -3,15 +3,15 @@ import type { TreeNode } from '@nevis/shared';
 import { flattenVisible } from './flattenVisible.js';
 
 function channel(id: string, name: string): TreeNode {
-  return { id, name, values: [0], depth: 2, kind: 'channel', children: [] };
+  return { id, name, values: [0], kind: 'channel', children: [] };
 }
 
 function employee(id: string, name: string, children: TreeNode[] = []): TreeNode {
-  return { id, name, values: [0], depth: 1, kind: 'employee', children };
+  return { id, name, values: [0], kind: 'employee', children };
 }
 
 function branch(id: string, name: string, children: TreeNode[] = []): TreeNode {
-  return { id, name, values: [0], depth: 0, kind: 'branch', children };
+  return { id, name, values: [0], kind: 'branch', children };
 }
 
 function buildTree(): TreeNode {
@@ -34,7 +34,6 @@ function buildTree(): TreeNode {
     id: 'company',
     name: 'Company',
     values: [0],
-    depth: -1,
     kind: 'company',
     children: [branch1, branch2, branch3],
   };

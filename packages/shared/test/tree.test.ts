@@ -9,21 +9,19 @@ const fixture: unknown = JSON.parse(readFileSync(fixturePath, 'utf-8'));
 const company = CompanySchema.parse(fixture);
 
 describe('toTreeNodes', () => {
-  it('builds a company root node at depth 0', () => {
+  it('builds a company root node', () => {
     const root = toTreeNodes(company);
     expect(root.kind).toBe('company');
-    expect(root.depth).toBe(0);
     expect(root.id).toBe(company.id);
     expect(root.name).toBe(company.name);
     expect(root.values).toEqual(company.values);
   });
 
-  it('gives every branch a branch child at depth 1', () => {
+  it('gives every branch a branch child', () => {
     const root = toTreeNodes(company);
     expect(root.children).toHaveLength(company.branches.length);
     for (const branchNode of root.children) {
       expect(branchNode.kind).toBe('branch');
-      expect(branchNode.depth).toBe(1);
     }
   });
 
@@ -34,13 +32,12 @@ describe('toTreeNodes', () => {
     expect(branch2?.children).toEqual([]);
   });
 
-  it('gives employees depth 2 and kind employee', () => {
+  it('gives every child of a branch kind employee', () => {
     const root = toTreeNodes(company);
     const branch1 = root.children.find((b) => b.name === 'Branch 1');
     expect(branch1).toBeDefined();
     for (const employeeNode of branch1?.children ?? []) {
       expect(employeeNode.kind).toBe('employee');
-      expect(employeeNode.depth).toBe(2);
     }
   });
 
@@ -52,7 +49,7 @@ describe('toTreeNodes', () => {
     expect(james?.children).toEqual([]);
   });
 
-  it('gives channels depth 3 and kind channel, only under Anna Blackwood', () => {
+  it('gives channels kind channel, only under Anna Blackwood', () => {
     const root = toTreeNodes(company);
     const branch1 = root.children.find((b) => b.name === 'Branch 1');
     const anna = branch1?.children.find((e) => e.name === 'Anna Blackwood');
@@ -60,7 +57,6 @@ describe('toTreeNodes', () => {
     expect(anna?.children.length).toBeGreaterThan(0);
     for (const channelNode of anna?.children ?? []) {
       expect(channelNode.kind).toBe('channel');
-      expect(channelNode.depth).toBe(3);
     }
   });
 
