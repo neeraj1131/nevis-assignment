@@ -113,7 +113,7 @@ declared once, not re-typed on each side.
 | Unit (`apps/web`) | `toChartData` mapping, `flattenVisible`/`useExpansion` (expand/collapse incl. keyboard), chart rendering, loading/error states | `pnpm --filter @nevis/web test` |
 | E2E (Playwright) | Full journey — load, expand branch, expand advisor, collapse via keyboard; a11y scan; 375px containment (default + fully expanded) | `pnpm e2e` |
 
-72 unit tests + 3 Playwright e2e specs. Coverage thresholds are enforced on the pure data-mapping
+80 unit tests (17 shared + 23 api + 40 web) + 3 Playwright e2e specs. Coverage thresholds are enforced on the pure data-mapping
 modules (`test:coverage`) rather than on presentational glue.
 
 **Testing notes:** the Playwright config runs on dedicated ports (web `:4311`, api `:4310`)
