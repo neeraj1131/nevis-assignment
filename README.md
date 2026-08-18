@@ -115,8 +115,7 @@ modules (`test:coverage`) rather than on presentational glue.
 
 **Testing notes:** the Playwright config runs on dedicated ports (web `:4311`, api `:4310`)
 instead of the default dev ports, so `pnpm e2e` doesn't collide with an already-running
-`pnpm dev` on your machine and CI doesn't need special-casing. Left as-is deliberately — see Task
-7/8 polish notes.
+`pnpm dev` on your machine and CI doesn't need special-casing.
 
 ## Assumptions & open questions
 
@@ -173,8 +172,8 @@ sourced from the real payload, not estimated).
   is fine for this dataset's size but wouldn't scale to thousands of advisors.
 - Visual regression testing (Playwright screenshot snapshots) to catch unintentional design
   drift, complementing the functional e2e coverage that exists today.
-- i18n and locale-aware number/date formatting (currently `Intl.NumberFormat` with the default
-  locale only).
+- i18n and locale-aware number/date formatting (currently `Intl.NumberFormat` hardcodes the `en`
+  locale rather than reading it from the browser/user).
 - A real datastore and auth instead of a static JSON file served verbatim — the API is already
   shaped so that swapping the data source wouldn't change the route/schema layer.
 - Release versioning via changesets, so `@nevis/shared`'s contract changes are tracked and
