@@ -1,6 +1,8 @@
 // @ts-check
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
+import reactHooks from 'eslint-plugin-react-hooks';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
@@ -25,7 +27,22 @@ export default tseslint.config(
       },
     },
   },
-  // NOTE: per-app blocks (e.g. React/jsx-a11y config for apps/web) can be
-  // appended here as additional objects in this array by later tasks.
+  // apps/web: React + accessibility linting on top of the shared TS rules.
+  {
+    files: ['apps/web/**/*.{ts,tsx}'],
+    plugins: {
+      'react-hooks': reactHooks,
+      'jsx-a11y': jsxA11y,
+    },
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    rules: {
+      ...reactHooks.configs.flat['recommended-latest'].rules,
+      ...jsxA11y.flatConfigs.recommended.rules,
+    },
+  },
   prettier,
 );
