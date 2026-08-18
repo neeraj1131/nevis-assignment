@@ -68,6 +68,11 @@ export function buildApp(opts: BuildAppOptions = {}): FastifyInstance {
       level: env.LOG_LEVEL,
       transport: isProduction ? undefined : { target: 'pino-pretty' },
     },
+    // In prod (docker-compose.yml) requests arrive via the nginx container,
+    // so req.ip would otherwise be nginx's container IP for every client —
+    // trust the X-Forwarded-For it sets so rate-limiting (and logging) key
+    // on the real client IP instead of nginx's.
+    trustProxy: true,
     // Honor an incoming x-request-id so requests can be correlated across
     // services; fall back to a fresh UUID when the client didn't send one.
     genReqId: (request) => {
@@ -86,6 +91,9 @@ export function buildApp(opts: BuildAppOptions = {}): FastifyInstance {
     done(null, payload);
   });
 
+  // M2 (deferred): CSP is off for the whole app, not just this JSON API's
+  // response types — acceptable for now since this API serves no HTML/JS,
+  // but revisit with a scoped policy if that ever changes.
   void app.register(helmet, { contentSecurityPolicy: false });
   void app.register(cors, {
     origin: parseCorsOrigins(env.CORS_ORIGIN),
