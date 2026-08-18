@@ -1,10 +1,14 @@
+// Darkened variants of the chart theme's hues, chosen so white avatar text
+// clears WCAG AA's 4.5:1 contrast ratio (verified against #ffffff) — the
+// lighter chart colors themselves read fine as chart fills, but fail
+// contrast once used as a background behind white initials.
 const PALETTE = [
-  '#AF9EF2', // lavender (matches --color-series-existing)
-  '#ECC0B6', // blush (matches --color-series-organic)
-  '#9D626E', // maroon (matches --color-series-paid)
-  '#8FB8DE', // soft blue
-  '#9FCBA0', // soft green
-  '#E3B04B', // soft amber
+  '#6E5FC7', // lavender (darkened --color-series-existing)
+  '#A85C50', // blush (darkened --color-series-organic)
+  '#7A3B47', // maroon (matches --color-series-paid)
+  '#3E6FA0', // soft blue
+  '#2E7A48', // soft green
+  '#A3690A', // soft amber
 ] as const;
 
 function hashId(id: string): number {
