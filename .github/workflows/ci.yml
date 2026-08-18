@@ -26,14 +26,20 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
+      - name: Build
+        # Must run before Typecheck/Test: apps/api and apps/web both resolve
+        # @nevis/shared through its compiled dist/ output (its package.json
+        # "main"/"exports" point there), and dist/ is gitignored — `pnpm
+        # install`'s `prepare` step in packages/shared covers a fresh clone,
+        # but running the full build here too keeps this job self-contained
+        # even if that ever changes.
+        run: pnpm build
+
       - name: Typecheck
         run: pnpm typecheck
 
       - name: Test
         run: pnpm test
-
-      - name: Build
-        run: pnpm build
 
   e2e:
     runs-on: ubuntu-latest

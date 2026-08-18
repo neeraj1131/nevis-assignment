@@ -17,6 +17,7 @@
     "dist"
   ],
   "scripts": {
+    "prepare": "pnpm build",
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch",
     "test": "vitest run",

@@ -12,7 +12,8 @@ a feature like this.
 `packageManager` in `package.json` automatically).
 
 ```bash
-pnpm install
+pnpm install    # also builds packages/shared's dist/ (its `prepare` script), which
+                # apps/api and apps/web both need — see Architecture
 pnpm dev        # api on :3000, web on :5173 (Vite proxies /api -> :3000)
 ```
 
