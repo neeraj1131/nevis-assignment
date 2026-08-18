@@ -1,5 +1,8 @@
 name: CI
 
+# M9 (deferred): no explicit `permissions:`/`concurrency:` blocks yet — the
+# default GITHUB_TOKEN scope and lack of run-cancellation are accepted
+# trade-offs for now, not an oversight.
 on:
   push:
   pull_request:
@@ -38,8 +41,8 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Test
-        run: pnpm test
+      - name: Test (with coverage)
+        run: pnpm test:coverage
 
   e2e:
     runs-on: ubuntu-latest

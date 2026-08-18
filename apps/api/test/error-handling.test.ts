@@ -56,4 +56,22 @@ describe('error handling', () => {
 
     await app.close();
   });
+
+  it('falls back to "Bad Request" as the title when a 4xx error has no name', async () => {
+    const app = buildApp({ logger: false });
+    app.get('/nameless-4xx', () => {
+      const error = new Error('missing field') as Error & { statusCode: number };
+      error.statusCode = 400;
+      error.name = '';
+      throw error;
+    });
+    await app.ready();
+
+    const response = await app.inject({ method: 'GET', url: '/nameless-4xx' });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json<{ title: string }>().title).toBe('Bad Request');
+
+    await app.close();
+  });
 });
