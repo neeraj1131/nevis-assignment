@@ -1,10 +1,10 @@
 import closeWithGrace from 'close-with-grace';
 import { buildApp } from './app.js';
+import { loadEnv } from './env.js';
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
-const HOST = process.env.HOST ?? '0.0.0.0';
+const env = loadEnv();
 
-const app = buildApp();
+const app = buildApp({ env });
 
 closeWithGrace({ delay: 500 }, async ({ err, signal }) => {
   if (err) {
@@ -16,7 +16,7 @@ closeWithGrace({ delay: 500 }, async ({ err, signal }) => {
 });
 
 try {
-  await app.listen({ port: PORT, host: HOST });
+  await app.listen({ port: env.PORT, host: env.HOST });
 } catch (err) {
   app.log.error({ err }, 'failed to start server');
   process.exit(1);
