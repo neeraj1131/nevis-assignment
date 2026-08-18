@@ -12,7 +12,7 @@ COPY apps/api/package.json apps/api/package.json
 COPY apps/web/package.json apps/web/package.json
 COPY packages/shared/package.json packages/shared/package.json
 
-RUN pnpm install --frozen-lockfile --filter @nevis/api...
+RUN pnpm install --frozen-lockfile --ignore-scripts --filter @nevis/api...
 
 # ---- build --------------------------------------------------------------
 # Copies sources for the api and its shared workspace dep, then builds
