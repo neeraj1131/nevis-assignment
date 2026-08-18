@@ -1,7 +1,9 @@
 {
   "name": "@nevis/web",
   "version": "0.1.0",
+  "description": "React + Recharts dashboard UI for the Nevis clients drill-down (chart + expandable table).",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",

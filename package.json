@@ -1,6 +1,9 @@
 {
   "name": "nevis-clients-dashboard",
+  "version": "0.1.0",
+  "description": "Clients dashboard (company → branch → advisor → channel) with a Fastify API, React/Recharts web app, and shared zod schemas.",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=22"

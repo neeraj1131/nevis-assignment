@@ -1,7 +1,9 @@
 {
   "name": "@nevis/api",
   "version": "0.1.0",
+  "description": "Fastify + zod REST API serving the clients dataset with OpenAPI docs, rate limiting, and ETag caching.",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "main": "./dist/server.js",
   "files": [

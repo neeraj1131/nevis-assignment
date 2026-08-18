@@ -1,7 +1,9 @@
 {
   "name": "@nevis/shared",
   "version": "0.1.0",
+  "description": "Shared zod schemas, tree normalizer, and month constants — the single source of truth for the clients domain model.",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
