@@ -15,6 +15,9 @@ export function ClientsTable({ root, months }: ClientsTableProps) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[720px] border-collapse">
+        <caption className="sr-only">
+          Clients per month by branch, advisor and acquisition channel
+        </caption>
         <thead>
           <tr>
             <th

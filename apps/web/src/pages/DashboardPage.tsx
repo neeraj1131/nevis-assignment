@@ -31,7 +31,7 @@ function TableCardSkeleton() {
 
 function ErrorCard({ onRetry }: { onRetry: () => void }) {
   return (
-    <div className="rounded-[var(--radius-card)] bg-[var(--color-card)] p-6 shadow-sm">
+    <div role="alert" className="rounded-[var(--radius-card)] bg-[var(--color-card)] p-6 shadow-sm">
       <p className="text-[var(--color-text-primary)]">
         Something went wrong while loading client data.
       </p>
