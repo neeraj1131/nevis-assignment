@@ -1,0 +1,33 @@
+# Dependencies and build output are rebuilt inside the image.
+node_modules
+**/node_modules
+dist
+**/dist
+coverage
+**/coverage
+
+# VCS / editor / tooling metadata not needed in build context.
+.git
+.github
+.idea
+.vscode
+*.iml
+.DS_Store
+
+# Docs and project-management artifacts irrelevant to the image.
+docs
+.superpowers
+.augment
+
+# Test sources are not needed at build time (build scripts compile src only).
+**/test
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Local env / logs.
+.env
+.env.*
+*.log
+pnpm-debug.log*

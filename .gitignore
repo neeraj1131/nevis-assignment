@@ -28,3 +28,24 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Node / pnpm monorepo ###
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+pnpm-debug.log*
+
+### Playwright ###
+test-results/
+playwright-report/
+blob-report/
+
+### Editor-adjacent tooling excluded from this repo ###
+.superpowers/
+.idea/
+*.iml
+.augment/personal/
