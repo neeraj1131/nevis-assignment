@@ -4,6 +4,7 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  type CellProps,
   Legend,
   ResponsiveContainer,
   Tooltip,
@@ -126,7 +127,7 @@ type RectRadius = number | [number, number, number, number];
  * above — this is a deliberate, narrow exception, not an oversight.
  */
 // eslint-disable-next-line @typescript-eslint/no-deprecated -- see comment above
-const RoundableCell = Cell as unknown as FC<{ key: string; radius: RectRadius }>;
+const RoundableCell = Cell as FC<Omit<CellProps, 'radius'> & { radius?: RectRadius }>;
 
 function segmentRadius(datum: ChartDatum, seriesKey: SeriesKey): RectRadius {
   return isTopMostNonZeroSegment(datum, seriesKey) ? [4, 4, 0, 0] : 0;
