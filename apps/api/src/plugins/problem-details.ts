@@ -33,8 +33,11 @@ export function registerErrorHandlers(app: FastifyInstance): void {
         : 500;
     const isServerError = status >= 500;
 
-    // Stack traces stay in the logs; the response body only ever gets a safe summary.
-    request.log.error({ err: error, statusCode: status }, 'request error');
+    // Stack traces stay in the logs; the response body only ever gets a safe
+    // summary. Client errors (4xx, e.g. 429 rate-limiting) are expected
+    // traffic and log at `warn`; only 5xx responses are `error`-worthy.
+    const logLevel = isServerError ? 'error' : 'warn';
+    request.log[logLevel]({ err: error, statusCode: status }, 'request error');
 
     sendProblem(reply, {
       type: 'about:blank',

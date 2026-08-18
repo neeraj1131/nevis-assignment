@@ -34,6 +34,8 @@ class RateLimitExceededError extends Error {
 
   constructor(message: string) {
     super(message);
+    // `name` doubles as the problem-details "title" for non-5xx errors in
+    // plugins/problem-details.ts — keep this in sync if that mapping changes.
     this.name = 'Too Many Requests';
   }
 }
