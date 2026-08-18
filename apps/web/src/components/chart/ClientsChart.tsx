@@ -47,6 +47,7 @@ interface TooltipPayloadEntry {
   dataKey?: string | number;
   value?: number | string;
   color?: string;
+  name?: string;
 }
 
 function ChartTooltip({
@@ -75,7 +76,7 @@ function ChartTooltip({
             className="inline-block h-2 w-2 rounded-sm"
             style={{ backgroundColor: entry.color }}
           />
-          {entry.value}
+          {entry.name}  {entry.value}
         </p>
       ))}
     </div>
