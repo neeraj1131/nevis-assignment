@@ -3,6 +3,7 @@ import { useClientsQuery } from '../api/useClientsQuery.js';
 import { ClientsChart } from '../components/chart/ClientsChart.js';
 import { toChartData } from '../components/chart/toChartData.js';
 import { ClientsTable } from '../components/table/ClientsTable.js';
+import { ErrorBoundary } from '../components/ErrorBoundary.js';
 
 function ChartCardSkeleton() {
   return (
@@ -37,7 +38,7 @@ function ErrorCard({ onRetry }: { onRetry: () => void }) {
       <button
         type="button"
         onClick={onRetry}
-        className="mt-4 rounded-full bg-[var(--color-series-existing)] px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] hover:opacity-90"
+        className="mt-4 rounded-full bg-[var(--color-series-existing)] px-4 py-2 text-sm font-medium text-[var(--color-text-primary)] hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-series-existing)] focus-visible:ring-offset-2"
       >
         Retry
       </button>
@@ -82,7 +83,9 @@ export function DashboardPage() {
       </h1>
 
       <div className="flex flex-col gap-6">
-        <DashboardContent />
+        <ErrorBoundary>
+          <DashboardContent />
+        </ErrorBoundary>
       </div>
     </main>
   );

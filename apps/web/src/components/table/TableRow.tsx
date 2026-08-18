@@ -1,5 +1,6 @@
 import type { VisibleRow } from './flattenVisible.js';
 import { Avatar } from '../ui/Avatar.js';
+import { formatNumber } from '../../lib/formatNumber.js';
 
 const INDENT_STEP_PX = 24;
 const BASE_PADDING_PX = 16;
@@ -60,7 +61,7 @@ export function TableRow({ row, onToggle, monthCount }: TableRowProps) {
               onClick={() => {
                 onToggle(node.id);
               }}
-              className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-[var(--color-text-secondary)] hover:bg-black/5"
+              className="flex h-5 w-5 shrink-0 items-center justify-center rounded text-[var(--color-text-secondary)] hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-series-existing)] focus-visible:ring-offset-1"
             >
               <ChevronIcon expanded={isExpanded} />
             </button>
@@ -76,7 +77,7 @@ export function TableRow({ row, onToggle, monthCount }: TableRowProps) {
           key={`${node.id}-${String(index)}`}
           className="h-[52px] px-4 text-right text-sm tabular-nums text-[var(--color-text-primary)]"
         >
-          {node.values[index] ?? 0}
+          {formatNumber(node.values[index] ?? 0)}
         </td>
       ))}
     </tr>

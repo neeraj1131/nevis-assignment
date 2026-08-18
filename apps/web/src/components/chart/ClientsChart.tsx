@@ -10,6 +10,8 @@ import {
 } from 'recharts';
 import type { ChartDatum } from './toChartData.js';
 import { CHART_COLORS, CHART_LEGEND_LABELS } from './chartTheme.js';
+import { formatNumber } from '../../lib/formatNumber.js';
+import { usePrefersReducedMotion } from '../../lib/usePrefersReducedMotion.js';
 
 export interface ClientsChartProps {
   data: ChartDatum[];
@@ -85,7 +87,7 @@ function ChartTooltip({
             className="inline-block h-2 w-2 rounded-sm"
             style={{ backgroundColor: entry.color }}
           />
-          {entry.name} {entry.value}
+          {entry.name} {typeof entry.value === 'number' ? formatNumber(entry.value) : entry.value}
         </p>
       ))}
     </div>
@@ -111,6 +113,9 @@ function describeChart(data: ChartDatum[]): string {
 }
 
 export function ClientsChart({ data, width, height }: ClientsChartProps) {
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const isAnimationActive = !prefersReducedMotion;
+
   const chart = (
     <BarChart
       data={data}
@@ -141,6 +146,7 @@ export function ClientsChart({ data, width, height }: ClientsChartProps) {
         stackId="clients"
         fill={CHART_COLORS.existing}
         radius={[0, 0, 0, 0]}
+        isAnimationActive={isAnimationActive}
       />
       <Bar
         dataKey="organic"
@@ -148,6 +154,7 @@ export function ClientsChart({ data, width, height }: ClientsChartProps) {
         stackId="clients"
         fill={CHART_COLORS.organic}
         radius={[0, 0, 0, 0]}
+        isAnimationActive={isAnimationActive}
       />
       <Bar
         dataKey="paid"
@@ -155,6 +162,7 @@ export function ClientsChart({ data, width, height }: ClientsChartProps) {
         stackId="clients"
         fill={CHART_COLORS.paid}
         radius={[4, 4, 0, 0]}
+        isAnimationActive={isAnimationActive}
       />
     </BarChart>
   );

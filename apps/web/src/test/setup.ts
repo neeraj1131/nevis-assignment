@@ -23,6 +23,25 @@ class ResizeObserverStub {
 
 globalThis.ResizeObserver = ResizeObserverStub;
 
+// jsdom doesn't implement window.matchMedia; usePrefersReducedMotion needs
+// it to read the `prefers-reduced-motion` media query. Stub a "no
+// preference" match with a no-op listener API so components using it don't
+// throw during tests.
+function stubMatchMedia(query: string): MediaQueryList {
+  return {
+    matches: false,
+    media: query,
+    onchange: null,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+    addListener: () => undefined,
+    removeListener: () => undefined,
+    dispatchEvent: () => false,
+  };
+}
+
+window.matchMedia = stubMatchMedia;
+
 beforeAll(() => {
   server.listen({ onUnhandledRequest: 'error' });
 });
