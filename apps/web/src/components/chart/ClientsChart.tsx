@@ -1,7 +1,9 @@
+import type { FC } from 'react';
 import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   Legend,
   ResponsiveContainer,
   Tooltip,
@@ -94,6 +96,42 @@ function ChartTooltip({
   );
 }
 
+type SeriesKey = 'existing' | 'organic' | 'paid';
+
+// Visual stacking order, top to bottom (Bar order in JSX below is bottom to
+// top, so this is the reverse of that render order).
+const STACK_ORDER_TOP_DOWN: readonly SeriesKey[] = ['paid', 'organic', 'existing'];
+
+function isTopMostNonZeroSegment(datum: ChartDatum, key: SeriesKey): boolean {
+  const topMostNonZeroKey = STACK_ORDER_TOP_DOWN.find((candidate) => datum[candidate] > 0);
+  return topMostNonZeroKey === key;
+}
+
+type RectRadius = number | [number, number, number, number];
+
+/**
+ * M3: `paid` is 0 in Feb/Mar/Aug, so a fixed `radius` on the `paid` Bar alone
+ * renders a flat top those months. Recharts' `radius` prop is fixed per
+ * `<Bar>`, so per-month variation needs a `<Cell>` child per data point
+ * (deliberately *not* Recharts' `shape` prop: setting a custom `shape`
+ * disables Recharts' own built-in "don't render a rectangle for a
+ * zero-value segment" filtering, which would re-introduce phantom rects for
+ * the zero months this fix is about). `radius` isn't in `Cell`'s declared
+ * prop type — Bar's rectangle-building code reads it off `Cell`'s raw props
+ * regardless (the same mechanism used for per-cell `fill`) — so this narrow
+ * cast documents that gap instead of silently widening Cell's props.
+ *
+ * `Cell` itself is marked `@deprecated` upstream (recharts steers new code
+ * toward `shape`/`content`), but `shape` is unusable here for the reason
+ * above — this is a deliberate, narrow exception, not an oversight.
+ */
+// eslint-disable-next-line @typescript-eslint/no-deprecated -- see comment above
+const RoundableCell = Cell as unknown as FC<{ key: string; radius: RectRadius }>;
+
+function segmentRadius(datum: ChartDatum, seriesKey: SeriesKey): RectRadius {
+  return isTopMostNonZeroSegment(datum, seriesKey) ? [4, 4, 0, 0] : 0;
+}
+
 function describeChart(data: ChartDatum[]): string {
   if (data.length === 0) {
     return 'No client data available.';
@@ -145,25 +183,34 @@ export function ClientsChart({ data, width, height }: ClientsChartProps) {
         name={CHART_LEGEND_LABELS.existing}
         stackId="clients"
         fill={CHART_COLORS.existing}
-        radius={[0, 0, 0, 0]}
         isAnimationActive={isAnimationActive}
-      />
+      >
+        {data.map((datum) => (
+          <RoundableCell key={datum.month} radius={segmentRadius(datum, 'existing')} />
+        ))}
+      </Bar>
       <Bar
         dataKey="organic"
         name={CHART_LEGEND_LABELS.organic}
         stackId="clients"
         fill={CHART_COLORS.organic}
-        radius={[0, 0, 0, 0]}
         isAnimationActive={isAnimationActive}
-      />
+      >
+        {data.map((datum) => (
+          <RoundableCell key={datum.month} radius={segmentRadius(datum, 'organic')} />
+        ))}
+      </Bar>
       <Bar
         dataKey="paid"
         name={CHART_LEGEND_LABELS.paid}
         stackId="clients"
         fill={CHART_COLORS.paid}
-        radius={[4, 4, 0, 0]}
         isAnimationActive={isAnimationActive}
-      />
+      >
+        {data.map((datum) => (
+          <RoundableCell key={datum.month} radius={segmentRadius(datum, 'paid')} />
+        ))}
+      </Bar>
     </BarChart>
   );
 
