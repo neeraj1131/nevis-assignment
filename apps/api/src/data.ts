@@ -7,10 +7,13 @@ import type { FastifyBaseLogger } from 'fastify';
 /**
  * Resolves the dataset path relative to this module's own directory.
  *
- * This works unmodified from both layouts:
+ * `../data` from this module's directory always lands on a `data/`
+ * directory that is a *sibling* of the module itself:
  *  - `src/data.ts` (tsx dev / vitest): `../data` resolves to `apps/api/data`.
- *  - `dist/data.js` (prod build): `../data` resolves to `apps/api/dist/data`,
- *    which `scripts/copy-data.mjs` populates as part of `pnpm build`.
+ *  - `dist/data.js` (prod build): `../data` resolves to `apps/api/data` too
+ *    (dist's parent), i.e. `apps/api/dist/data` is NOT used. The Docker
+ *    runtime image (see apps/api/Dockerfile) copies `apps/api/data` as a
+ *    sibling of `dist/` to match this at container build time.
  */
 function resolveDatasetPath(): string {
   const moduleDir = path.dirname(fileURLToPath(import.meta.url));

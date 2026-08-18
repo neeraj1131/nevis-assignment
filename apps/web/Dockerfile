@@ -6,6 +6,10 @@ WORKDIR /repo
 RUN corepack enable && corepack prepare pnpm@10.33.0 --activate
 
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml .npmrc ./
+# apps/api/package.json is copied even though this image only builds
+# @nevis/web: pnpm-lock.yaml is a single lockfile for the whole workspace,
+# so `pnpm install --frozen-lockfile` needs every workspace package.json
+# present to verify the lockfile is still consistent with them.
 COPY apps/api/package.json apps/api/package.json
 COPY apps/web/package.json apps/web/package.json
 COPY packages/shared/package.json packages/shared/package.json
