@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import type { Company } from '@nevis/shared';
 import fixture from '../../test/fixtures/clients-payload.json' with { type: 'json' };
@@ -8,7 +8,24 @@ import { CHART_LEGEND_LABELS } from './chartTheme.js';
 
 const company: Company = fixture;
 
+function mockPrefersReducedMotion(matches: boolean): void {
+  window.matchMedia = vi.fn().mockReturnValue({
+    matches,
+    media: '(prefers-reduced-motion: reduce)',
+    onchange: null,
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  });
+}
+
 describe('ClientsChart', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it('renders a bar rect per non-zero series/month segment and the legend labels', () => {
     const data = toChartData(company);
 
@@ -41,5 +58,27 @@ describe('ClientsChart', () => {
     expect(screen.getByText(CHART_LEGEND_LABELS.existing)).toBeInTheDocument();
     expect(screen.getByText(CHART_LEGEND_LABELS.organic)).toBeInTheDocument();
     expect(screen.getByText(CHART_LEGEND_LABELS.paid)).toBeInTheDocument();
+  });
+
+  it('rounds only the top-most non-zero segment of each month (12 rounded bar rects)', () => {
+    // Under prefers-reduced-motion, ClientsChart sets isAnimationActive=false,
+    // so Recharts skips its entrance animation and renders each bar rect's
+    // final `d` path directly instead of an interpolated/animated one — the
+    // only way to get real, assertable rounded-corner geometry out of
+    // Recharts under jsdom (which has no layout/animation engine).
+    mockPrefersReducedMotion(true);
+
+    const data = toChartData(company);
+    const { container } = render(<ClientsChart data={data} width={800} height={400} />);
+
+    const rectPaths = Array.from(container.querySelectorAll('.recharts-bar-rectangle path'));
+    // A rounded-corner rect path draws its corners with SVG arc ('A')
+    // commands; a plain (unrounded, radius 0) rect path does not.
+    const roundedPaths = rectPaths.filter((path) => path.getAttribute('d')?.includes('A'));
+
+    // One rounded segment per month: segmentRadius() only rounds the
+    // top-most non-zero series for that month (see ClientsChart.tsx), and
+    // the fixture has 12 months.
+    expect(roundedPaths).toHaveLength(12);
   });
 });
