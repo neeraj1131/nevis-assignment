@@ -1,6 +1,8 @@
+import { MONTHS, toTreeNodes } from '@nevis/shared';
 import { useClientsQuery } from '../api/useClientsQuery.js';
 import { ClientsChart } from '../components/chart/ClientsChart.js';
 import { toChartData } from '../components/chart/toChartData.js';
+import { ClientsTable } from '../components/table/ClientsTable.js';
 
 function ChartCardSkeleton() {
   return (
@@ -66,12 +68,7 @@ function DashboardContent() {
       </section>
 
       <section className="rounded-[var(--radius-card)] bg-[var(--color-card)] p-6 shadow-sm">
-        <p className="text-sm text-[var(--color-text-secondary)]">
-          Table coming
-          <span className="sr-only">
-            : the detailed clients breakdown table will be added in a future update.
-          </span>
-        </p>
+        <ClientsTable root={toTreeNodes(query.data.data)} months={MONTHS} />
       </section>
     </>
   );
