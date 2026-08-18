@@ -1,15 +1,6 @@
-import { z } from 'zod';
-import { CompanySchema, MONTHS } from '@nevis/shared';
+import { ClientsResponseSchema, type ClientsResponse } from '@nevis/shared';
 
-export const ClientsResponseSchema = z.object({
-  data: CompanySchema,
-  meta: z.object({
-    months: z.array(z.enum(MONTHS)).length(12),
-    generatedAt: z.string(),
-  }),
-});
-
-export type ClientsResponse = z.infer<typeof ClientsResponseSchema>;
+export type { ClientsResponse };
 
 export class ApiError extends Error {
   readonly status: number;
@@ -22,6 +13,10 @@ export class ApiError extends Error {
 }
 
 export async function fetchClients(): Promise<ClientsResponse> {
+  // M11 (deferred): no client-side timeout/AbortController — a hung request
+  // relies on the browser's own connection timeout. Acceptable for this
+  // same-origin, low-latency dev/prod topology; would want one before
+  // pointing this at a less predictable network.
   const res = await fetch('/api/v1/clients');
 
   if (!res.ok) {
