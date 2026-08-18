@@ -71,8 +71,11 @@ export function buildApp(opts: BuildAppOptions = {}): FastifyInstance {
     // In prod (docker-compose.yml) requests arrive via the nginx container,
     // so req.ip would otherwise be nginx's container IP for every client —
     // trust the X-Forwarded-For it sets so rate-limiting (and logging) key
-    // on the real client IP instead of nginx's.
-    trustProxy: true,
+    // on the real client IP instead of nginx's. `1` (not `true`) trusts
+    // exactly one hop: only the outermost X-Forwarded-For entry (the one
+    // nginx itself appends) is honored, so a client can't defeat the
+    // per-IP rate limit by prepending spoofed addresses of its own.
+    trustProxy: 1,
     // Honor an incoming x-request-id so requests can be correlated across
     // services; fall back to a fresh UUID when the client didn't send one.
     genReqId: (request) => {
