@@ -32,7 +32,6 @@ export function buildApp(opts: BuildAppOptions = {}): FastifyInstance {
       transport: isProduction ? undefined : { target: 'pino-pretty' },
     },
     genReqId: () => crypto.randomUUID(),
-    disableRequestLogging: false,
   });
 
   app.setValidatorCompiler(validatorCompiler);
