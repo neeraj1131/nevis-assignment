@@ -76,7 +76,7 @@ function ChartTooltip({
             className="inline-block h-2 w-2 rounded-sm"
             style={{ backgroundColor: entry.color }}
           />
-          {entry.name}  {entry.value}
+          {entry.name} {entry.value}
         </p>
       ))}
     </div>
