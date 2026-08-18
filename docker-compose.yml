@@ -7,6 +7,10 @@ services:
       NODE_ENV: production
       LOG_LEVEL: info
       CORS_ORIGIN: http://localhost:8080
+    # M12 (deferred): the api port is published to the host, not just
+    # reachable on the compose network — convenient for hitting :3000/docs
+    # directly in this local/demo setup, but a prod deployment would drop
+    # this and route everything through nginx (:8080) only.
     ports:
       - '3000:3000'
     healthcheck:

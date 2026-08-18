@@ -10,6 +10,10 @@ const apiPort = process.env.VITE_DEV_API_PORT ?? '3000';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // M13 (deferred): no build.chunkSizeWarningLimit / manual chunk-splitting
+  // tuning — this app's dependency set (React, Recharts, TanStack Query) is
+  // small enough that default Vite warnings haven't fired; revisit if the
+  // bundle grows.
   server: {
     proxy: {
       '/api': {
