@@ -37,14 +37,19 @@ export interface TableRowProps {
 }
 
 export function TableRow({ row, onToggle, monthCount }: TableRowProps) {
-  const { node, depth, isExpandable, isExpanded } = row;
+  const { node, depth, isExpandable, isExpanded, posInSet, setSize } = row;
   const isCompany = node.kind === 'company';
   const isEmployee = node.kind === 'employee';
 
   const paddingLeft = BASE_PADDING_PX + depth * INDENT_STEP_PX;
 
   return (
-    <tr className="border-t border-black/5 hover:bg-black/[0.02]">
+    <tr
+      className="border-t border-black/5 hover:bg-black/[0.02]"
+      aria-level={depth + 1}
+      aria-posinset={posInSet}
+      aria-setsize={setSize}
+    >
       <th
         scope="row"
         className={`h-[52px] whitespace-nowrap px-4 text-left text-sm font-normal text-[var(--color-text-primary)] ${

@@ -161,6 +161,15 @@ describe('DashboardPage', () => {
       expect(branch2Cells[0]).toBe('76');
       expect(branch2Cells[branch2Cells.length - 1]).toBe('91');
     });
+
+    it('exposes the hierarchy to assistive tech via aria-level/posinset/setsize on Branch 2', async () => {
+      await renderDashboard();
+
+      const branch2Row = findRow('Branch 2');
+      expect(branch2Row).toHaveAttribute('aria-level', '2');
+      expect(branch2Row).toHaveAttribute('aria-posinset', '2');
+      expect(branch2Row).toHaveAttribute('aria-setsize', '3');
+    });
   });
 
   describe('chart wiring (Step 18)', () => {
