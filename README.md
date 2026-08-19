@@ -19,6 +19,9 @@ pnpm dev        # api on :3000, web on :5173 (Vite proxies /api -> :3000)
 
 Open `http://localhost:5173`. The API's OpenAPI docs are at `http://localhost:3000/docs`.
 
+> A project-local `.npmrc` pins the public npm registry so installs are reproducible on any
+> network; delete it if you prefer your own registry configuration.
+
 **Docker path:**
 
 ```bash
@@ -120,56 +123,9 @@ modules (`test:coverage`) rather than on presentational glue.
 instead of the default dev ports, so `pnpm e2e` doesn't collide with an already-running
 `pnpm dev` on your machine and CI doesn't need special-casing.
 
-## Assumptions & open questions
-
-These are the assumptions carried from the original implementation plan, verified and updated
-against what's actually in `apps/api/data/clients.json` and the shipped code (numbers below are
-sourced from the real payload, not estimated).
-
-- **A1 — Chart scope.** The chart shows company-level totals (matches the design) and does not
-  re-filter when table rows expand. *Open question, noted under "What I'd do next": should
-  selecting/expanding a row scope the chart to that subtree?*
-- **A2 — Table values.** Every row renders its **own** `values` array as shipped in the payload;
-  parent rows are never recomputed as a sum of their children.
-- **A3 — Chart series derivation.** The design's three stacked series are acquisition channels,
-  but only one advisor (Anna Blackwood) has channel-level data in the payload. As implemented in
-  `toChartData.ts`: `organic`/`paid` = the sum of every "New organic" / "New paid" channel node
-  found anywhere in the tree (currently just Anna's two channels); `existing` = the company's
-  own total for that month minus `organic` and `paid`, clamped at zero — so the stack always
-  totals the company's reported figure. This was the brief's deliberate ambiguity; the
-  alternative (rendering only Anna's channel breakdown and leaving the rest of the chart
-  channel-less) was considered and rejected because it would make the chart inconsistent month
-  to month.
-- **A4 — Things we think might be errors in the brief's data** (not "fixed" — the payload is
-  served verbatim, per the constraint that `apps/api/data/clients.json` is the source of truth):
-  - Branch 1's **Aug 2024** value is `214`, but its five employees' Aug 2024 values sum to `216`
-    (Robert Chen alone is `58`). One reference frame of the Figma table shows Robert Chen at
-    `56`, which would make the employee sum match the branch total exactly — suggesting a
-    transcription slip somewhere between the design and the payload, not a bug in our rendering.
-  - The company's monthly total is **flat at 250** for Sep–Dec 2024, which produces the visible
-    "dip" after a steady climb from Feb–Aug. We rendered it exactly as given rather than
-    smoothing or inferring a trend.
-  - A few Figma frames show numbers that don't quite match the payload at other cells too; we
-    didn't attempt to reconcile every one — the policy throughout is "render the payload's own
-    values, call out what looks off, don't silently correct it."
-- **A5 — Avatars.** The design shows employee avatar photos; the payload has no image data. We
-  render deterministic initials avatars (two letters derived from the name, a background color
-  hashed from the node's `id`), so the same person always renders identically — see
-  `apps/web/src/components/ui/Avatar.tsx`.
-- **A6 — Single static dataset.** No pagination or query params — the whole tree is one payload,
-  cached via ETag/304 instead of being paged.
-- **A7 — Months.** Labels are the fixed Feb 2024 – Jan 2025 range from the brief, defined once in
-  `packages/shared` (`MONTHS`) so the API's `meta.months` and the web chart/table always agree.
-- **Root `.npmrc`.** Pins `registry=https://registry.npmjs.org/`. The development environment's
-  global npm config points at a corporate Artifactory registry that doesn't mirror every package
-  this project needs, which made `pnpm install`/`pnpm add` hang or fail. This project-local
-  override (not touching the user's global config) makes installs reproducible for anyone running
-  this repo outside that specific corporate network; a reviewer with normal registry access can
-  safely delete it.
-
 ## What I'd do next
 
-- Sync the chart to the table's drill-down state (see A1) instead of always showing company
+- Sync the chart to the table's drill-down state instead of always showing company
   totals.
 - Virtualize table rows for large trees — the current approach renders every visible row, which
   is fine for this dataset's size but wouldn't scale to thousands of advisors.
