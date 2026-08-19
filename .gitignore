@@ -49,3 +49,6 @@ blob-report/
 .idea/
 *.iml
 .augment/personal/
+# Local-only: assignment brief and internal planning artifacts (kept out of the public repo)
+/docs/
+/.augment/
