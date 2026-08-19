@@ -46,6 +46,8 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    # Hangs in browser provisioning should fail fast, not spin for an hour.
+    timeout-minutes: 15
     needs: quality
     steps:
       - uses: actions/checkout@v4
@@ -67,8 +69,17 @@ jobs:
         # workspace deps the same way a prod build would.
         run: pnpm --filter @nevis/shared build
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Install Playwright's chromium browser
-        run: pnpm --filter @nevis/web exec playwright install --with-deps chromium
+        # No --with-deps: ubuntu-latest already ships chromium's system
+        # libraries, and the sudo apt-get path it triggers is a known source
+        # of runner hangs (observed twice on this repo).
+        run: pnpm --filter @nevis/web exec playwright install chromium
 
       - name: Run e2e tests
         run: pnpm e2e
